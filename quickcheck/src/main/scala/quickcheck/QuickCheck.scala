@@ -16,12 +16,12 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     findMin(h) == a
   }
 
-  property("min2") = forAll { (a: Int, b: Int) =>
+  property("hint1") = forAll { (a: Int, b: Int) =>
     val h = insert(b, insert(a, empty))
     findMin(h) == min(a, b)
   }
 
-  property("min2") = forAll { a: Int =>
+  property("hint2") = forAll { a: Int =>
     val h = insert(a, empty)
     isEmpty(deleteMin(h))
   }
@@ -30,7 +30,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     Gen.listOfN(size, Gen.choose(0, 100))
   }
 
-  property("min3") = forAll(sizedList) { list =>
+  property("hint3") = forAll(sizedList) { list =>
     val heap = insertAll(list, empty)
     val sortedList = getElementsFrom(heap)
     sortedList.sorted == sortedList
@@ -46,6 +46,23 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
       val h1 = insertAll(lists._1, empty)
       val h2 = insertAll(lists._2, empty)
       findMin(meld(h1, h2)) == min(findMin(h1), findMin(h2))
+    }
+  }
+
+  property("meld") = forAll(sizedLists) { lists =>
+    (lists._1.length > 0 && lists._2.length > 0) ==> {
+      val h1 = insertAll(lists._1, empty)
+      val h2 = insertAll(lists._2, empty)
+      def heapEqual(h1: H, h2: H): Boolean = {
+        if (isEmpty(h1) && isEmpty(h2)) true
+        else {
+          val m1 = findMin(h1)
+          val m2 = findMin(h2)
+          m1 == m2 && heapEqual(deleteMin(h1), deleteMin(h2))
+        }
+      }
+      heapEqual(meld(h1, h2),
+              meld(deleteMin(h1), insert(findMin(h1), h2)))
     }
   }
 
