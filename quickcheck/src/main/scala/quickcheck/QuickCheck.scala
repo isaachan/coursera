@@ -36,6 +36,19 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     sortedList.sorted == sortedList
   }
 
+  val sizedLists = for {
+    n <- sizedList
+    m <- sizedList
+  } yield (n, m)
+
+  property("min4") = forAll(sizedLists) { lists =>
+    (lists._1.length > 0 && lists._2.length > 0) ==> {
+      val h1 = insertAll(lists._1, empty)
+      val h2 = insertAll(lists._2, empty)
+      findMin(meld(h1, h2)) == min(findMin(h1), findMin(h2))
+    }
+  }
+
   def insertAll(listToAdd: List[Int], heap: H): H = {
     if (listToAdd.isEmpty) { heap }
     else {
