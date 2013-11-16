@@ -7,7 +7,7 @@ import Arbitrary._
 import Gen._
 import Prop._
 import math._
-import collection.mutable._
+import collection.immutable._
 
 abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
