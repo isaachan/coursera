@@ -76,6 +76,7 @@ abstract class CircuitSimulator extends Simulator {
     inverter(w3, output)
   }
 
+  // http://courses.cs.washington.edu/courses/cse370/97au/admin/Slides/Week5Lecture1/sld003.htm
   def demux(in: Wire, c: List[Wire], out: List[Wire]) {
     ???
   }
