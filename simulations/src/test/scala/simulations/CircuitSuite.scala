@@ -115,9 +115,33 @@ class CircuitSuite extends CircuitSimulator with FunSuite {
     c0.setSignal(true)
     run
 
-    assert(out0.getSignal == false, "demux 2:4 1")
-    assert(out1.getSignal == false, "demux 2:4 1")
-    assert(out2.getSignal == false, "demux 2:4 1")
-    assert(out3.getSignal == true, "demux 2:4 1")
+    assert(out0.getSignal === false, "demux 2:4 1")
+    assert(out1.getSignal === false, "demux 2:4 1")
+    assert(out2.getSignal === true, "demux 2:4 1")
+    assert(out3.getSignal === false, "demux 2:4 1")
+
+
+    in.setSignal(false)
+    c0.setSignal(true)
+    run
+
+    assert(out0.getSignal === false, "demux 2:4 2")
+    assert(out1.getSignal === false, "demux 2:4 2")
+    assert(out2.getSignal === false, "demux 2:4 2")
+    assert(out3.getSignal === false, "demux 2:4 2")
+  }
+
+  test("demux 3:8") {
+    val in, c0, c1, c2, out0, out1, out2, out3, out4, out5, out6, out7 = new Wire
+    val outputs = List(out0, out1, out2, out3, out4, out5, out6, out7)
+    demux(in, List(c0, c1, c2), outputs)
+
+    in.setSignal(true)
+    c1.setSignal(true)
+    run
+
+    assert(out0.getSignal === false, "demux 3:8 1")
+    assert(out2.getSignal === true, "demux 3:8 1")
+    assert(out7.getSignal === false, "demux 3:8 1")
   }
 }

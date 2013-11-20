@@ -95,7 +95,7 @@ abstract class CircuitSimulator extends Simulator {
     val cn = new Wire
     inverter(c, cn)
     andGate(in, cn, out0)
-    andGate(in, cn, out1)
+    andGate(in, c, out1)
   }
 }
 
@@ -114,7 +114,7 @@ object Circuit extends CircuitSimulator {
     in2.setSignal(false)
     run
 
-    in1.setSignal(true)
+     in1.setSignal(true)
     run
 
     in2.setSignal(true)
