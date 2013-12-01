@@ -47,7 +47,19 @@ trait NodeScala {
    *  @param handler        a function mapping a request to a response
    *  @return               a subscription that can stop the server and all its asynchronous operations *entirely*.
    */
-  def start(relativePath: String)(handler: Request => Response): Subscription = ???
+  def start(relativePath: String)(handler: Request => Response): Subscription = {
+    val listener = createListener(relativePath)
+    val subscription = listener.start()
+    val worker = Future.run() { cts =>
+      async {
+        while (cts.nonCancelled) {
+          val (request, exchange) = await(listener.nextRequest)
+          respond(exchange, cts, handler(request))
+        }
+      }
+    }
+    Subscription.apply(subscription, worker)
+  }
 
 }
 
