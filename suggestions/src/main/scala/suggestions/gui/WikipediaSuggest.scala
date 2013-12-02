@@ -28,9 +28,7 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
   }
 
   def top = new MainFrame {
-
     /* gui setup */
-
     title = "Query Wikipedia"
     minimumSize = new Dimension(900, 600)
 
@@ -79,7 +77,6 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
      *  `myListView.selection.items` returns a list of selected items from `myListView`
      *  `myEditorPane.text = "act"` : sets the content of `myEditorPane` to "act"
      */
-
     // TO IMPLEMENT
     val searchTerms: Observable[String] = searchTermField.textValues
 
@@ -87,7 +84,6 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
     val suggestions: Observable[Try[List[String]]] = searchTerms concatRecovered { keyWord =>
       wikiSuggestResponseStream(keyWord) timedOut(1)
     }
-
     // TO IMPLEMENT
     val suggestionSubscription: Subscription =  suggestions.observeOn(eventScheduler) subscribe {
       _ match {
@@ -95,19 +91,14 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
         case Failure(e) => status.text = e.getMessage
       }
     }
-
     // TO IMPLEMENT
     val selections: Observable[String] = 
           button.clicks map { _ =>  suggestionList.selection.items.head }
 
     // TO IMPLEMENT
-    val pages: Observable[Try[String]] = 
-           selections.sanitized
+    val pages: Observable[Try[String]] = selections.sanitized
                      .concatRecovered { keyWord => wikiPageResponseStream(keyWord) timedOut(5) }
-
-
     selections.sanitized.concatRecovered(wikiPageResponseStream(_).timedOut(2))
-
     // TO IMPLEMENT
     val pageSubscription: Subscription = pages.observeOn(eventScheduler) subscribe {
       _ match {
@@ -115,7 +106,6 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
         case Failure(e) => status.text = e.getMessage
       }
     }
-
   }
 
 }
