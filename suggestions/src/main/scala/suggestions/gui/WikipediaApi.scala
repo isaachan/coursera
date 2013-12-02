@@ -10,6 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{ Try, Success, Failure }
 import rx.subscriptions.CompositeSubscription
 import rx.lang.scala.Observable
+import rx.lang.scala.subscriptions.Subscription
 import rx.lang.scala.Notification.{OnNext, OnError, OnCompleted}
 import observablex._
 import search._
@@ -61,7 +62,17 @@ trait WikipediaApi {
      *
      * Note: uses the existing combinators on observables.
      */
-    def timedOut(totalSec: Long): Observable[T] = ???
+    // TODO 
+    def timedOut(totalSec: Long): Observable[T] =
+        obs.buffer(totalSec seconds)
+           .take(1)
+           .flatMap { seq => 
+             Observable { observable => 
+               for (o <- seq) { observable onNext(o) }
+               observable.onCompleted
+               Subscription {}
+             } 
+           }
 
 
     /** Given a stream of events `obs` and a method `requestMethod` to map a request `T` into
