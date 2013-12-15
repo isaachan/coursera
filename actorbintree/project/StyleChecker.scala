@@ -52,7 +52,9 @@ object StyleChecker {
       val path = f.getAbsolutePath
       path.contains("quickcheck") ||
       path.contains("nodescala") ||
-      path.contains("suggestions")
+      path.contains("suggestions") ||
+      path.contains("actorbintree") ||
+      path.contains("kvstore")
     }
     val tweak = if (reactive) "_reactive" else ""
 
